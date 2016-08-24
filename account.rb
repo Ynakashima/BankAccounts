@@ -1,16 +1,29 @@
+require 'csv'
+
 module Bank
 
   class Account
-    attr_reader :id
-    attr_accessor :balance
+    attr_reader :id#keep as string?
+    attr_accessor :balance#convert to fixnum? convert to money?
+    attr_reader :date_open #must convert to date format?
 
-    def initialize(id, initial_balance)
+    def initialize(id, initial_balance, date_open)
       if initial_balance < 0
         raise ArgumentError.new("You cannot have an initial negative balance")
       else
       @id = id
       @balance = initial_balance
+      @date_open = date_open
       end
+    end
+
+    def self.all
+      account_list = []
+      CSV.read("/Users/YNaka/Ada/project_forks/BankAccounts/support/accounts.csv", "r").each do |line|
+        account_list << self.new(line[0],line[1].to_i,line[2])
+      end
+
+      account_list
     end
 
     def negative_balance?

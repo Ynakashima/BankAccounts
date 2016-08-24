@@ -6,3 +6,5 @@ require_relative 'account'
 # puts y.deposit(200)
 #
 # y.current_balance
+
+#Bank::Account.all
