@@ -29,7 +29,7 @@ module Bank
     def self.find(this_id)
       Account.all.each do |a|
         if this_id == a.id.to_i
-          return a.id + a.balance + a.date_open
+          return a
         else
           return "That does not match any account IDs at this bank. Please enter a valid ID."
         end
