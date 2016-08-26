@@ -125,23 +125,19 @@ module Bank
     end
 
     def withdraw_using_check(amount)
+      fee = 0
       @free_checks -= 1
+
       if @free_checks < 0
-        @balance = @balance - amount - 2
-          if overdraft?
-            @balance =balance + amount + 2
-            puts "That amount will overdraft your checking account, your transaction cannot be completed. Your balance is #{@balance}"
-          else
-            puts "Your balance is now $#{@balance}"
-          end
+        fee = 2
+      end
+
+      @balance = @balance - amount - fee
+      if overdraft?
+        @balance =balance + amount + fee
+        puts "That amount will overdraft your checking account, your transaction cannot be completed. Your balance is #{@balance}"
       else
-        @balance-=amount
-         if overdraft?
-           @balance += amount
-           puts "That amount will overdraft your checking account, your transaction cannot be completed. Your balance is #{@balance}"
-         else
-           puts "Your balance is now $#{@balance}"
-         end
+        puts "Your balance is now $#{@balance}"
       end
     end
   end
