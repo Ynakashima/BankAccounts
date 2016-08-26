@@ -59,4 +59,38 @@ module Bank
       puts "Your balance is currently #{@balance}."
     end
   end
+
+  class SavingsAccount < Bank::Account
+    attr_reader :id
+    attr_accessor :balance
+    attr_reader :date_open
+
+    def initialize(id, initial_balance, date_open)
+      @balance = initial_balance
+      if initial_balance < 10
+        raise ArgumentError.new("The minimum amount to open a Savings Account is $10")
+      else
+        super(id, initial_balance, date_open)
+      end
+    end
+
+    def below_min_balance?
+      @balance < 10
+    end
+
+    def withdraw(amt_withdraw)
+      @balance = @balance - amt_withdraw - 2
+      if below_min_balance?
+        @balance = @balance + amt_withdraw + 2
+        puts "That withdrawal did not go through because it would create a negative balance. Your balance is $#{@balance}"
+      else
+      super(amt_withdraw)
+      end
+    end
+
+    def add_interest(rate)
+
+    end
+
+  end
 end
