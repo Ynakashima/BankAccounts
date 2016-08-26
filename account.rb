@@ -82,15 +82,67 @@ module Bank
       @balance = @balance - amt_withdraw - 2
       if below_min_balance?
         @balance = @balance + amt_withdraw + 2
-        puts "That withdrawal did not go through because it would create a negative balance. Your balance is $#{@balance}"
+        puts "That withdrawal did not go through because it would put your account below the minimum balance.Your balance is $#{@balance}"
       else
       super(amt_withdraw)
       end
     end
 
     def add_interest(rate)
+      @interest_amount = @balance * (rate/100)
+      @balance = @interest_amount + @balance
+      return @interest_amount
+    end
+  end
 
+
+  class CheckingAccount < Bank::Account
+    attr_reader :id
+    attr_accessor :balance
+    attr_reader :date_open
+
+    def initialize(id, initial_balance, date_open)
+      super(id, initial_balance, date_open)
+      @free_checks = 3
     end
 
+    def withdraw(amt_withdraw)
+      @balance = @balance - amt_withdraw - 1
+      if negative_balance?
+        @balance = @balance + amt_withdraw + 1
+        puts "That withdrawal did not go through because it would put your account below the minimum balance.Your balance is $#{@balance}"
+      else
+      super(amt_withdraw)
+      end
+    end
+
+    def overdraft?
+      @balance <= -10
+    end
+
+    def reset_free_checks
+      @free_checks = 3
+    end
+
+    def withdraw_using_check(amount)
+      @free_checks -= 1
+      if @free_checks < 0
+        @balance = @balance - amount - 2
+          if overdraft?
+            @balance =balance + amount + 2
+            puts "That amount will overdraft your checking account, your transaction cannot be completed. Your balance is #{@balance}"
+          else
+            puts "Your balance is now $#{@balance}"
+          end
+      else
+        @balance-=amount
+         if overdraft?
+           @balance += amount
+           puts "That amount will overdraft your checking account, your transaction cannot be completed. Your balance is #{@balance}"
+         else
+           puts "Your balance is now $#{@balance}"
+         end
+      end
+    end
   end
 end
